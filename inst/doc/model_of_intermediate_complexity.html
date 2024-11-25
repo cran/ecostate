@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="James Thorson" />
+
+
+<title>Model of Intermediate Complexity</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Model of Intermediate Complexity</h1>
+<h4 class="author">James Thorson</h4>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(ecostate)</span></code></pre></div>
+<p><code>ecostate</code> is an R package for fitting the mass-balance
+dynamics specified by EcoSim as a state-space model. We here demonstrate
+how it can be fitted to a real-world data set as a “Model of
+Intermediate Complexity” while including 10 functional groups and 1
+detritus pool, using data across four trophic levels and representing
+both pelagic and demersal energy pathways.</p>
+<div id="eastern-bering-sea" class="section level2">
+<h2>Eastern Bering Sea</h2>
+<p>We first load the <code>Survey</code>, <code>Catch</code>,
+<code>PB</code>, and <code>QB</code> values, and define other biological
+inputs:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">data</span>(eastern_bering_sea)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Reformat inputs</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>years <span class="ot">=</span> <span class="dv">1982</span><span class="sc">:</span><span class="dv">2021</span> <span class="co"># Catch only goes through 2021, and starting pre-data in 1982 doesn&#39;t play well with fit_B0</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>taxa <span class="ot">=</span> <span class="fu">c</span>( <span class="st">&quot;Pollock&quot;</span>, <span class="st">&quot;Cod&quot;</span>, <span class="st">&quot;Arrowtooth&quot;</span>, <span class="st">&quot;Copepod&quot;</span>, <span class="st">&quot;Other_zoop&quot;</span>, <span class="st">&quot;Chloro&quot;</span>, <span class="st">&quot;NFS&quot;</span>, <span class="st">&quot;Krill&quot;</span>, <span class="st">&quot;Benthic_invert&quot;</span>, <span class="st">&quot;Benthos&quot;</span>, <span class="st">&quot;Detritus&quot;</span> )</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co"># Define types</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>type_i <span class="ot">=</span> <span class="fu">sapply</span>( taxa, <span class="at">FUN=</span><span class="cf">switch</span>, <span class="st">&quot;Detritus&quot;</span> <span class="ot">=</span> <span class="st">&quot;detritus&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>                                   <span class="st">&quot;Chloro&quot;</span> <span class="ot">=</span> <span class="st">&quot;auto&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>                                   <span class="st">&quot;hetero&quot;</span> )</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co"># Starting values</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>U_i <span class="ot">=</span> EE_i <span class="ot">=</span> B_i <span class="ot">=</span> <span class="fu">array</span>( <span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">length</span>(taxa), </span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>                    <span class="at">dimnames=</span><span class="fu">list</span>(<span class="fu">names</span>(eastern_bering_sea<span class="sc">$</span>P_over_B)))</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>B_i[<span class="fu">c</span>(<span class="st">&quot;Cod&quot;</span>, <span class="st">&quot;Arrowtooth&quot;</span>, <span class="st">&quot;NFS&quot;</span>)] <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.02</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>EE_i[] <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>U_i[] <span class="ot">=</span> <span class="fl">0.2</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co"># Define default vulnerability, except for primary producers</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>X_ij <span class="ot">=</span> <span class="fu">array</span>( <span class="dv">2</span>, <span class="at">dim=</span><span class="fu">c</span>(<span class="fu">length</span>(taxa),<span class="fu">length</span>(taxa)) )</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="fu">dimnames</span>(X_ij) <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">names</span>(B_i),<span class="fu">names</span>(B_i))</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>X_ij[,<span class="st">&#39;Chloro&#39;</span>] <span class="ot">=</span> <span class="dv">91</span></span></code></pre></div>
+<p>We then fit the function call. This is very slow:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Define parameters to estimate</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>fit_Q <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Pollock&quot;</span>, <span class="st">&quot;Copepod&quot;</span>, <span class="st">&quot;Chloro&quot;</span>, <span class="st">&quot;Other_zoop&quot;</span>, <span class="st">&quot;Krill&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>fit_B0 <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Pollock&quot;</span>, <span class="st">&quot;Cod&quot;</span>, <span class="st">&quot;Arrowtooth&quot;</span>, <span class="st">&quot;NFS&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>fit_B <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Cod&quot;</span>, <span class="st">&quot;Arrowtooth&quot;</span>, <span class="st">&quot;NFS&quot;</span>)  </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># Define process errors to estimate</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># Only estimating Pollock to speed up demonstration</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>fit_eps <span class="ot">=</span> <span class="st">&quot;Pollock&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># Which taxa to include</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>taxa_to_include <span class="ot">=</span> <span class="fu">c</span>( <span class="st">&quot;NFS&quot;</span>, <span class="st">&quot;Pollock&quot;</span>, <span class="st">&quot;Copepod&quot;</span>, <span class="st">&quot;Chloro&quot;</span>, <span class="st">&quot;Krill&quot;</span> )</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co"># To run full model use:</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co"># taxa_to_include = taxa</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co"># Define priors</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>log_prior <span class="ot">=</span> <span class="cf">function</span>(p){</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  <span class="co"># Prior on process-error log-SD to stabilize model</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  logp <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">dnorm</span>( p<span class="sc">$</span>logtau_i, <span class="at">mean=</span><span class="fu">log</span>(<span class="fl">0.2</span>), <span class="at">sd=</span><span class="dv">1</span>, <span class="at">log=</span><span class="cn">TRUE</span> ), <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>}</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co"># Run model</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">ecostate</span>( <span class="at">taxa =</span> taxa_to_include,</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>                <span class="at">years =</span> years,</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>                <span class="at">catch =</span> eastern_bering_sea<span class="sc">$</span>Catch,</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>                <span class="at">biomass =</span> eastern_bering_sea<span class="sc">$</span>Survey,</span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>                <span class="at">PB =</span> eastern_bering_sea<span class="sc">$</span>P_over_B,</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>                <span class="at">QB =</span> eastern_bering_sea<span class="sc">$</span>Q_over_B,</span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>                <span class="at">DC =</span> eastern_bering_sea<span class="sc">$</span>Diet_proportions,</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>                <span class="at">B =</span> B_i,</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>                <span class="at">EE =</span> EE_i,</span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>                <span class="at">U =</span> U_i,</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>                <span class="at">type =</span> type_i,</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>                <span class="at">X =</span> X_ij,</span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>                <span class="at">fit_B =</span> fit_B,</span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a>                <span class="at">fit_Q =</span> fit_Q,</span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a>                <span class="at">fit_eps =</span> fit_eps,</span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a>                <span class="at">fit_B0 =</span> fit_B0,</span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a>                <span class="at">log_prior =</span> log_prior,</span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a>                <span class="at">control =</span> <span class="fu">ecostate_control</span>( <span class="at">n_steps =</span> <span class="dv">20</span>, <span class="co"># using 15 by default</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a>                                            <span class="at">start_tau =</span> <span class="fl">0.01</span>,</span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a>                                            <span class="at">tmbad.sparse_hessian_compress =</span> <span class="dv">0</span> ))</span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co"># print output</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a>out</span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; Dynamics integrated using  ABM  with  20  time-steps</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; Run time: Time difference of 1.7463 mins</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt; Negative log-likelihood: 111.8524</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; EcoSim parameters:</span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt;           type        QB          PB          B EE   U</span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt; NFS     hetero 57.763550  0.09429851 0.01609925  0 0.2</span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt; Pollock hetero  4.225892  0.82452074 3.26652224  1 0.2</span></span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt; Copepod hetero 27.740000  6.00000000 1.85225167  1 0.2</span></span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt; Chloro    auto        NA 99.40685006 0.63388263  1 0.2</span></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt; Krill   hetero 15.640000  5.48000000 1.05351582  1 0.2</span></span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt; EcoSim diet matrix:</span></span>
+<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a><span class="co">#&gt;          Predator</span></span>
+<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a><span class="co">#&gt; Prey      NFS   Pollock Copepod Chloro     Krill</span></span>
+<span id="cb3-60"><a href="#cb3-60" tabindex="-1"></a><span class="co">#&gt;   NFS       0 0.0000000       0      0 0.0000000</span></span>
+<span id="cb3-61"><a href="#cb3-61" tabindex="-1"></a><span class="co">#&gt;   Pollock   1 0.1277434       0      0 0.0000000</span></span>
+<span id="cb3-62"><a href="#cb3-62" tabindex="-1"></a><span class="co">#&gt;   Copepod   0 0.4540243       0      0 0.2941176</span></span>
+<span id="cb3-63"><a href="#cb3-63" tabindex="-1"></a><span class="co">#&gt;   Chloro    0 0.0000000       1      0 0.7058824</span></span>
+<span id="cb3-64"><a href="#cb3-64" tabindex="-1"></a><span class="co">#&gt;   Krill     0 0.4182324       0      0 0.0000000</span></span>
+<span id="cb3-65"><a href="#cb3-65" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-66"><a href="#cb3-66" tabindex="-1"></a><span class="co">#&gt; EcoSim vulnerability matrix:</span></span>
+<span id="cb3-67"><a href="#cb3-67" tabindex="-1"></a><span class="co">#&gt;         NFS Pollock Copepod Chloro Krill</span></span>
+<span id="cb3-68"><a href="#cb3-68" tabindex="-1"></a><span class="co">#&gt; NFS       2       2       2     91     2</span></span>
+<span id="cb3-69"><a href="#cb3-69" tabindex="-1"></a><span class="co">#&gt; Pollock   2       2       2     91     2</span></span>
+<span id="cb3-70"><a href="#cb3-70" tabindex="-1"></a><span class="co">#&gt; Copepod   2       2       2     91     2</span></span>
+<span id="cb3-71"><a href="#cb3-71" tabindex="-1"></a><span class="co">#&gt; Chloro    2       2       2     91     2</span></span>
+<span id="cb3-72"><a href="#cb3-72" tabindex="-1"></a><span class="co">#&gt; Krill     2       2       2     91     2</span></span>
+<span id="cb3-73"><a href="#cb3-73" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-74"><a href="#cb3-74" tabindex="-1"></a><span class="co">#&gt; Estimates: sdreport(.) result</span></span>
+<span id="cb3-75"><a href="#cb3-75" tabindex="-1"></a><span class="co">#&gt;            Estimate Std. Error</span></span>
+<span id="cb3-76"><a href="#cb3-76" tabindex="-1"></a><span class="co">#&gt; delta_i  -0.9107485 0.07412192</span></span>
+<span id="cb3-77"><a href="#cb3-77" tabindex="-1"></a><span class="co">#&gt; delta_i  -0.9712690 0.10263244</span></span>
+<span id="cb3-78"><a href="#cb3-78" tabindex="-1"></a><span class="co">#&gt; logB_i   -4.1289824 0.05667705</span></span>
+<span id="cb3-79"><a href="#cb3-79" tabindex="-1"></a><span class="co">#&gt; logtau_i -1.1467111 0.14112593</span></span>
+<span id="cb3-80"><a href="#cb3-80" tabindex="-1"></a><span class="co">#&gt; logq_i    0.9289014 0.05572851</span></span>
+<span id="cb3-81"><a href="#cb3-81" tabindex="-1"></a><span class="co">#&gt; logq_i    1.0002721 0.06744515</span></span>
+<span id="cb3-82"><a href="#cb3-82" tabindex="-1"></a><span class="co">#&gt; logq_i    2.6850118 0.05908211</span></span>
+<span id="cb3-83"><a href="#cb3-83" tabindex="-1"></a><span class="co">#&gt; logq_i    2.3987716 0.07547528</span></span>
+<span id="cb3-84"><a href="#cb3-84" tabindex="-1"></a><span class="co">#&gt; Maximum gradient component: 0.0001222253</span></span></code></pre></div>
+<p>We can then plot the estimated foodweb:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Plot foodweb at equilibrium</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co"># using pelagic producers as x-axis and trophic level as y-axis</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">plot_foodweb</span>( out<span class="sc">$</span>rep<span class="sc">$</span>out_initial<span class="sc">$</span>Qe_ij,  </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>              <span class="at">xtracer_i =</span> <span class="fu">ifelse</span>(taxa_to_include<span class="sc">==</span><span class="st">&quot;Krill&quot;</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>              <span class="at">B_i =</span> out<span class="sc">$</span>rep<span class="sc">$</span>out_initial<span class="sc">$</span>B_i,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>              <span class="at">type_i =</span> type_i[taxa_to_include] )</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; Warning: Removed 4 rows containing missing values or values outside the scale range</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Runtime for this vignette: 1.77 mins</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
